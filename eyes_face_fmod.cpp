@@ -1,8 +1,6 @@
  #include "opencv2/objdetect/objdetect.hpp"
  #include "opencv2/highgui/highgui.hpp"
  #include "opencv2/imgproc/imgproc.hpp"
- #include <ao/ao.h>
- #include <mpg123.h>
  #include "pthread.h"
  #include <signal.h>
  #include <spawn.h>
@@ -196,6 +194,8 @@ trackid="1";
      int s=kill(pid_sad,9);} 
   else if (pid_open!=0){
      int s=kill(pid_open,9);}
+  else if (pid_happy!=0){
+     int s=kill(pid_happy,9);}
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
@@ -217,10 +217,11 @@ if (pid_happy!=0){
      int s=kill(pid_happy,9);}
 else if (pid_open!=0){
      int s=kill(pid_open,9);}
+else if (pid_sad!=0){
+     int s=kill(pid_sad,9);}
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
-//playaudio(trackid);
 } 
 
 
@@ -234,11 +235,13 @@ c_open=0;
 }
 
 if (c_open==3){
-trackid="5";
+trackid="3";
   if (pid_sad!=0){
      int s=kill(pid_sad,9);}
   else if (pid_happy!=0){
-     int s=kill(pid_happy,9);}  
+     int s=kill(pid_happy,9);} 
+  else if (pid_open!=0){
+     int s=kill(pid_open,9);} 
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
@@ -269,7 +272,7 @@ void *start_posix_spawn(void* threadid) {
          pid_happy=pid;}
       else if (orisma=="2"){
          pid_sad=pid;}
-      else if (orisma=="5"){
+      else if (orisma=="3"){
          pid_open=pid;}
     printf("Child id: %i\n", pid);
     fflush(NULL);
