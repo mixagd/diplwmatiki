@@ -71,7 +71,7 @@ void *start_posix_spawn(void* threadid);
    if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
    //-- 2. Read the video stream
-   if (!capture.open("http://192.168.1.65:8081/?x.mjpg"))
+   if (!capture.open("http://192.168.1.80:8081/?x.mjpg"))
       { printf(" --(!) No open -- Break!"); return 0; }
    //if( capture )
    //{
@@ -236,7 +236,7 @@ c_open=0;
 }
 
 if (c_open==3){
-trackid="5";
+trackid="3";
   if (pid_sad!=0){
      int s=kill(pid_sad,9);}
   else if (pid_happy!=0){
@@ -271,7 +271,7 @@ void *start_posix_spawn(void* threadid) {
          pid_happy=pid;}
       else if (orisma=="2"){
          pid_sad=pid;}
-      else if (orisma=="5"){
+      else if (orisma=="3"){
          pid_open=pid;}
     printf("Child id: %i\n", pid);
     fflush(NULL);
