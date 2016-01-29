@@ -1,8 +1,6 @@
  #include "opencv2/objdetect/objdetect.hpp"
  #include "opencv2/highgui/highgui.hpp"
  #include "opencv2/imgproc/imgproc.hpp"
- #include <ao/ao.h>
- #include <mpg123.h>
  #include "pthread.h"
  #include <signal.h>
  #include <spawn.h>
@@ -33,6 +31,7 @@ void *start_posix_spawn(void* threadid);
  /** Global variables */
   pid_t pid, pid_happy, pid_sad, pid_open;
  const char* trackid;
+ //const char* kil;
  extern char **environ;
  pthread_t thread;
  int rc;
@@ -60,6 +59,7 @@ void *start_posix_spawn(void* threadid);
  int main( int argc, const char** argv )
  {
    
+   //CvCapture* capture;
    VideoCapture capture;
    Mat frame;
 
@@ -71,7 +71,7 @@ void *start_posix_spawn(void* threadid);
    if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
    //-- 2. Read the video stream
-   if (!capture.open("http://192.168.1.80:8081/?x.mjpg"))
+   if (!capture.open("http://192.168.1.90:8081/?x.mjpg"))
       { printf(" --(!) No open -- Break!"); return 0; }
    //if( capture )
    //{
@@ -89,9 +89,30 @@ void *start_posix_spawn(void* threadid);
        int c = waitKey(10);
        if( (char)c == 'c' ) { break; }
       }
-  // }
+  
+
+/*capture = cvCaptureFromCAM( -1 );
+   if( capture )
+   {
+     while( true )
+     {
+   frame = cvQueryFrame( capture );
+
+   //-- 3. Apply the classifier to the frame
+       if( !frame.empty() )
+       { detectAndDisplay( frame ); }
+       else
+       { printf(" --(!) No captured frame -- Break!"); break; }
+
+       int c = waitKey(10);
+       if( (char)c == 'c' ) { break; }
+      }
+   }*/
+
    return 0;
  }
+
+
 
 /** @function detectAndDisplay */
 void detectAndDisplay( Mat frame )
@@ -193,11 +214,15 @@ c_happy=0;
 }
 
 if (c_happy==5){
+/*kil="9";
+rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) kil);*/
 trackid="1";
-  if (pid_sad!=0){
-     int s=kill(pid_sad,9);} 
+  /*if (pid_sad!=0){
+     //int s=kill(pid_sad,9);}
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);} 
   else if (pid_open!=0){
-     int s=kill(pid_open,9);}
+     //int s=kill(pid_open,9);}
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);}*/
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
@@ -214,11 +239,15 @@ c_sad=0;
 }
 
 if (c_sad==5){
+/*kil="9";
+rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) kil);*/
 trackid="2";
-if (pid_happy!=0){
-     int s=kill(pid_happy,9);}
+/*if (pid_happy!=0){
+     //int s=kill(pid_happy,9);}
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);}
 else if (pid_open!=0){
-     int s=kill(pid_open,9);}
+     //int s=kill(pid_open,9);}
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);}*/
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
@@ -236,11 +265,15 @@ c_open=0;
 }
 
 if (c_open==3){
+/*kil="9";
+rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) kil);*/
 trackid="3";
-  if (pid_sad!=0){
-     int s=kill(pid_sad,9);}
+  /*if (pid_sad!=0){
+     //int s=kill(pid_sad,9);
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);}
   else if (pid_happy!=0){
-     int s=kill(pid_happy,9);}  
+     rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) k);}
+     //int s=kill(pid_happy,9);}  */
 rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 
 
@@ -257,22 +290,22 @@ rc=pthread_create(&thread,NULL,start_posix_spawn,(void*) trackid);
 void *start_posix_spawn(void* threadid) {
   std::cout<<"Process starts"<<std::endl;
   
- char * exe=(char *)"fmod_main";
+ char * exe=(char *)"clientsite";
  char * orisma=(char *)threadid;
  long tid=(long)threadid;
   char *argv[] = {exe, orisma, (char *) 0};
   int status;
   puts("Testing start_posix_spawn");
   fflush(NULL);
-  status = posix_spawn(&pid, "/home/mixa/fmod_main", NULL, NULL, argv, environ);
+  status = posix_spawn(&pid, "/home/mixa/clientsite", NULL, NULL, argv, environ);
   
    if (status == 0) {
-      if (orisma=="1"){
+     /* if (orisma=="1"){
          pid_happy=pid;}
       else if (orisma=="2"){
          pid_sad=pid;}
       else if (orisma=="3"){
-         pid_open=pid;}
+         pid_open=pid;}*/
     printf("Child id: %i\n", pid);
     fflush(NULL);
     if (waitpid(pid, &status, 0) != -1) {
